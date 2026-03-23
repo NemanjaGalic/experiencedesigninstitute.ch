@@ -1,0 +1,1580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Experience Design Institute — The Infrastructure for Human-Robot Trust</title>
+  <meta name="description" content="The Experience Design Institute (EDI) is the official governing body of LSEP (Light, Sound & Expression Protocol), the first open standard for human-robot interaction (HRI). EU AI Act compliant. ISO 13482 ready.">
+  <meta name="keywords" content="LSEP, human-robot interaction, HRI, robot safety, EU AI Act, ISO 13482, open standard, robotics, robot communication protocol, autonomous machines">
+  <meta property="og:title" content="Experience Design Institute — The Infrastructure for Human-Robot Trust">
+  <meta property="og:description" content="The official governing body of LSEP — the open standard for human-robot interaction. EU AI Act compliant. ISO 13482 ready.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.experiencedesigninstitute.ch">
+  <link rel="canonical" href="https://www.experiencedesigninstitute.ch">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- GA4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-7CEK4MPWR9"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-7CEK4MPWR9');
+  </script>
+
+  <!-- Schema.org JSON-LD Organization -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Experience Design Institute",
+    "alternateName": "EDI",
+    "url": "https://www.experiencedesigninstitute.ch",
+    "description": "The official governing body of LSEP (Light, Sound & Expression Protocol), the first open-source, physics-based communication standard for human-robot interaction.",
+    "foundingDate": "2023",
+    "founder": {
+      "@type": "Person",
+      "name": "Nemanja Galić"
+    },
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Bern",
+      "addressCountry": "Switzerland"
+    }
+  }
+  </script>
+
+  <!-- Schema.org JSON-LD FAQPage -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is LSEP?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "LSEP (Light, Sound & Expression Protocol) is an open-source communication standard that enables robots and autonomous machines to communicate their internal states and intentions to humans through physics-based signals — light patterns, sound frequencies, and kinematic expressions. It is administered by the Experience Design Institute (EDI)."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How does LSEP comply with the EU AI Act?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "LSEP provides protocol-level state logging and human-legible intent signaling, addressing key EU AI Act requirements for high-risk AI systems (Annex IV). Every robot state is documented, traceable, and auditable, supporting transparency obligations under Article 13."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is LSEP compatible with ROS 2?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. LSEP is designed as a middleware-agnostic communication layer. Reference implementations are available for ROS 2 (Robot Operating System), and the protocol can be integrated with any robotics framework that supports structured state messaging."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What robot types does LSEP support?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "LSEP supports humanoid robots, collaborative robots (cobots), autonomous mobile robots (AMRs), industrial manipulators, and service robots. The protocol is platform-independent and scales from single-robot deployments to multi-robot fleet operations."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How does LSEP ensure interoperability?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "LSEP defines a universal state machine with 9 standardized states and 3 signal modalities. Any LSEP-certified robot uses the same signal vocabulary, ensuring consistent human-robot interaction across manufacturers and platforms — similar to how Wi-Fi ensures wireless interoperability."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Where can I find the LSEP specification?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The full LSEP specification is available on lsep.org and the GitHub repository at github.com/NemanjaGalic/LSEP. The specification is open-source and free to implement."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --yellow: #F5C542;
+      --teal: #00B8A9;
+      --black: #0A0A0F;
+      --dark: #12121A;
+      --card: #1A1A24;
+      --text: #EAEAF0;
+      --muted: #8888A0;
+      --border: #1E1E2E;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--black);
+      color: var(--text);
+      line-height: 1.6;
+      font-weight: 400;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Navigation */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(10, 10, 15, 0.8);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    nav .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 70px;
+    }
+
+    .logo {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      color: var(--text);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+      gap: 6px;
+    }
+
+    .hamburger span {
+      width: 24px;
+      height: 2px;
+      background: var(--text);
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    /* Sections */
+    section {
+      padding: 80px 0;
+    }
+
+    section.dbg {
+      background: var(--dark);
+    }
+
+    .slabel {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .slabel.t {
+      color: var(--teal);
+    }
+
+    .slabel.y {
+      color: var(--yellow);
+    }
+
+    .slabel.m {
+      color: var(--muted);
+    }
+
+    h1 {
+      font-size: 52px;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 24px;
+      letter-spacing: -1px;
+    }
+
+    h2 {
+      font-size: 40px;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 24px;
+      letter-spacing: -0.5px;
+    }
+
+    h3 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    p {
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    p strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .subtitle {
+      font-size: 18px;
+      line-height: 1.6;
+      color: var(--muted);
+      margin-bottom: 40px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-block;
+      padding: 12px 28px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+
+    .btn.bp {
+      background: var(--teal);
+      color: var(--black);
+    }
+
+    .btn.bp:hover {
+      background: #00a099;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 184, 169, 0.3);
+    }
+
+    .btn.bs {
+      background: transparent;
+      color: var(--teal);
+      border: 1px solid var(--teal);
+    }
+
+    .btn.bs:hover {
+      background: rgba(0, 184, 169, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .btn.bg {
+      background: var(--yellow);
+      color: var(--black);
+    }
+
+    .btn.bg:hover {
+      background: #f0ba2e;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(245, 197, 66, 0.3);
+    }
+
+    /* CTA Row */
+    .cta-row {
+      display: flex;
+      gap: 16px;
+      margin-top: 32px;
+      flex-wrap: wrap;
+    }
+
+    /* Hero Section */
+    #hero {
+      padding: 140px 0 80px;
+    }
+
+    .hero-content h1 {
+      color: var(--text);
+    }
+
+    .hero-content h1 .teal {
+      color: var(--teal);
+    }
+
+    .trust-badges {
+      display: flex;
+      gap: 24px;
+      margin-top: 40px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    .badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--teal);
+      border-radius: 50%;
+    }
+
+    /* Hero Video Placeholder */
+    .hero-video {
+      aspect-ratio: 16 / 9;
+      background: var(--card);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 60px 0 24px;
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-video::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(0, 184, 169, 0.05), rgba(245, 197, 66, 0.05));
+      z-index: 1;
+    }
+
+    .hero-video-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      z-index: 2;
+      position: relative;
+    }
+
+    .play-button {
+      width: 60px;
+      height: 60px;
+      background: var(--teal);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .play-button:hover {
+      background: #00a099;
+      transform: scale(1.1);
+    }
+
+    .play-button svg {
+      width: 24px;
+      height: 24px;
+      fill: var(--black);
+      margin-left: 2px;
+    }
+
+    .hero-video-text {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    /* Entity Definition */
+    .entity-definition {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 40px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* Cards Grid */
+    .grid {
+      display: grid;
+      gap: 24px;
+      margin-top: 40px;
+    }
+
+    .g2 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .g3 {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .g4 {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 32px;
+      transition: all 0.3s ease;
+    }
+
+    .card:hover {
+      border-color: var(--teal);
+      box-shadow: 0 16px 40px rgba(0, 184, 169, 0.1);
+    }
+
+    .card h3 {
+      color: var(--teal);
+      font-size: 18px;
+      margin-bottom: 16px;
+    }
+
+    .card p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* Manifesto Section */
+    .manifesto-item {
+      margin-bottom: 40px;
+    }
+
+    .manifesto-item p {
+      font-size: 16px;
+      line-height: 1.8;
+    }
+
+    .manifesto-item strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* Protocol Stats */
+    .protocol-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      margin-top: 40px;
+      text-align: center;
+    }
+
+    .stat {
+      padding: 24px;
+      background: var(--card);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .stat-number {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--teal);
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    /* Certification Seal */
+    .seal-container {
+      display: flex;
+      justify-content: center;
+      margin: 40px 0;
+    }
+
+    .certification-seal {
+      width: 200px;
+      height: 200px;
+    }
+
+    /* FAQ Section */
+    .faq-list {
+      margin-top: 40px;
+    }
+
+    details {
+      margin-bottom: 16px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0;
+      transition: all 0.3s ease;
+    }
+
+    details:hover {
+      border-color: var(--teal);
+    }
+
+    summary {
+      padding: 20px;
+      cursor: pointer;
+      font-weight: 500;
+      color: var(--text);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+    }
+
+    summary:hover {
+      color: var(--teal);
+    }
+
+    summary::after {
+      content: '▼';
+      font-size: 12px;
+      transition: transform 0.3s ease;
+      color: var(--teal);
+    }
+
+    details[open] summary::after {
+      transform: rotate(180deg);
+    }
+
+    details[open] {
+      background: rgba(0, 184, 169, 0.05);
+      border-color: var(--teal);
+    }
+
+    .faq-answer {
+      padding: 0 20px 20px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    /* Team Cards */
+    .team-card {
+      text-align: center;
+    }
+
+    .team-photo {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: var(--card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      font-size: 24px;
+      font-weight: 700;
+      border: 2px solid var(--border);
+      overflow: hidden;
+    }
+
+    .team-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .team-photo.ng {
+      background: var(--teal);
+      color: var(--black);
+    }
+
+    .team-photo.mb {
+      background: var(--yellow);
+      color: var(--black);
+    }
+
+    .team-photo.ma {
+      background: var(--border);
+      color: var(--muted);
+    }
+
+    .team-card h3 {
+      margin-bottom: 4px;
+    }
+
+    .team-role {
+      color: var(--teal);
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .team-card p {
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    /* Alliance Section */
+    #alliance {
+      background: linear-gradient(135deg, rgba(245, 197, 66, 0.05) 0%, rgba(0, 184, 169, 0.05) 100%);
+    }
+
+    /* Footer */
+    footer {
+      background: var(--dark);
+      border-top: 1px solid var(--border);
+      padding: 60px 0 40px;
+      font-size: 14px;
+    }
+
+    .footer-content {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 60px;
+      margin-bottom: 40px;
+    }
+
+    .footer-info h3 {
+      font-size: 16px;
+      margin-bottom: 12px;
+    }
+
+    .footer-info p {
+      font-size: 13px;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer-links a:hover {
+      color: var(--text);
+    }
+
+    .footer-bottom {
+      border-top: 1px solid var(--border);
+      padding-top: 24px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    /* Modals */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(5px);
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 40px;
+      max-width: 500px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateY(-50px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .modal-close {
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      color: var(--muted);
+      cursor: pointer;
+      border: none;
+      background: none;
+      padding: 0;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.3s ease;
+    }
+
+    .modal-close:hover {
+      color: var(--text);
+    }
+
+    .modal h2 {
+      margin-top: 0;
+      font-size: 28px;
+      margin-bottom: 24px;
+      clear: both;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      transition: border-color 0.3s ease;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="tel"]:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(0, 184, 169, 0.1);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: var(--teal);
+    }
+
+    .checkbox-item label {
+      margin-bottom: 0;
+      cursor: pointer;
+      font-weight: 400;
+    }
+
+    .modal-footer {
+      display: flex;
+      gap: 12px;
+      margin-top: 32px;
+    }
+
+    .modal-footer .btn {
+      flex: 1;
+    }
+
+    /* Success Modal */
+    .success-checkmark {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 24px;
+      background: rgba(0, 184, 169, 0.2);
+      border: 2px solid var(--teal);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: popIn 0.3s ease;
+    }
+
+    @keyframes popIn {
+      0% {
+        transform: scale(0.5);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .success-checkmark svg {
+      width: 36px;
+      height: 36px;
+      fill: var(--teal);
+    }
+
+    .modal.success-modal .modal-content {
+      text-align: center;
+    }
+
+    .modal.success-modal h2 {
+      margin-bottom: 12px;
+    }
+
+    .modal.success-modal p {
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .modal.success-modal .success-link {
+      display: block;
+      margin: 20px 0;
+      color: var(--teal);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .modal.success-modal .success-link:hover {
+      color: var(--text);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      h1 {
+        font-size: 32px;
+      }
+
+      h2 {
+        font-size: 28px;
+      }
+
+      section {
+        padding: 50px 0;
+      }
+
+      .g2, .g3, .g4 {
+        grid-template-columns: 1fr;
+      }
+
+      .trust-badges {
+        gap: 16px;
+      }
+
+      .protocol-stats {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .footer-content {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+
+      .cta-row {
+        flex-direction: column;
+      }
+
+      .cta-row .btn {
+        width: 100%;
+      }
+
+      .modal-content {
+        padding: 24px;
+      }
+
+      .modal-footer {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav>
+    <div class="container">
+      <div class="logo">Experience Design Institute</div>
+      <ul class="nav-links">
+        <li><a href="#manifesto">Manifesto</a></li>
+        <li><a href="#protocol">Protocol</a></li>
+        <li><a href="#certification">Certification</a></li>
+        <li><a href="#team">Team</a></li>
+        <li><a href="#alliance">Alliance</a></li>
+      </ul>
+      <div class="hamburger" id="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section id="hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="slabel t">THE EXPERIENCE DESIGN INSTITUTE</div>
+        <h1>Building the Infrastructure for <span class="teal">Human-Robot Trust.</span></h1>
+        <p class="subtitle">The governing body behind LSEP — the open standard for how robots communicate intent to humans. We certify physical AI systems for safety, compliance, and human legibility.</p>
+
+        <div class="cta-row">
+          <button class="btn bp" onclick="openModal('certModal')">Become LSEP Certified →</button>
+          <button class="btn bs" onclick="openModal('allianceModal')">Apply for the Alliance</button>
+        </div>
+
+        <!-- Hero Video Placeholder -->
+        <div class="hero-video">
+          <div class="hero-video-content">
+            <div class="play-button">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <polygon points="5 3 19 12 5 21"/>
+              </svg>
+            </div>
+            <div class="hero-video-text">90s Protocol Overview — Coming Soon</div>
+          </div>
+        </div>
+
+        <!-- Entity Definition -->
+        <div class="entity-definition">
+          The Experience Design Institute (EDI) is the official governing body of LSEP (Light, Sound & Expression Protocol), the first open-source, physics-based communication standard designed to ensure humanoid robots comply with EU AI Act (Annex IV) and ISO 13482 safety regulations for human-robot interaction (HRI).
+        </div>
+
+        <!-- Trust Badges -->
+        <div class="trust-badges">
+          <div class="badge">Open Standard</div>
+          <div class="badge">EU AI Act Ready</div>
+          <div class="badge">Physics-Based</div>
+          <div class="badge">Non-Discriminatory</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Manifesto Section -->
+  <section id="manifesto">
+    <div class="container">
+      <div class="slabel y">THE LSEP MANIFESTO</div>
+      <h2>What We Believe</h2>
+
+      <div class="manifesto-item">
+        <p><strong>Our Belief:</strong> Silence between humans and autonomous machines is dangerous. Opaque robot behavior breeds fear and resistance. When a 200kg machine approaches you and you have no idea what it's about to do — that's not innovation. That's negligence.</p>
+      </div>
+
+      <div class="manifesto-item">
+        <p><strong>Our Mission:</strong> We believe every human has the fundamental right to know what a physical AI system is about to do. Not through screens. Not through apps. Through the machine itself — directly, physically, unmistakably. This is the foundation of <strong>human-robot interaction</strong>.</p>
+      </div>
+
+      <div class="manifesto-item">
+        <p><strong>Our Solution:</strong> We don't build robots. We build the <strong>open standard</strong> for trust between humans and machines. Physics-based, universally understood, and designed for <strong>interoperability</strong> across every platform. No discrimination, no surveillance. Just light, sound, and motion.</p>
+      </div>
+
+      <div class="manifesto-item">
+        <p><strong>Our Standard:</strong> LSEP is not a product. It's infrastructure. Like Bluetooth gave us wireless audio, like USB-C gave us universal power — LSEP gives robots a voice. An honest one. Built for <strong>robot safety</strong>, designed for transparency.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Protocol Section -->
+  <section id="protocol" class="dbg">
+    <div class="container">
+      <div class="slabel t">THE PROTOCOL</div>
+      <h2>1 Protocol. 9 States. 3 Modalities.</h2>
+
+      <p class="subtitle">LSEP (Light, Sound & Expression Protocol) is the first formal <strong>Human-Robot Interaction (HRI)</strong> standard for <strong>intent signaling</strong> and <strong>algorithmic transparency</strong>. A <strong>robot communication protocol</strong> independent of facial recognition. The robot's perception stays private; its intent becomes visible. Every signal is physics-based. Every state is human-legible. Every implementation is auditable — ensuring full <strong>robot safety</strong> compliance and <strong>interoperability</strong> across platforms.</p>
+
+      <div class="grid g3">
+        <div class="card">
+          <h3>Light</h3>
+          <p>LED arrays and light patterns communicate intent. Color-coded states: red for caution, green for safe approach, yellow for uncertain motion. Visible from all angles, impossible to miss.</p>
+        </div>
+        <div class="card">
+          <h3>Sound</h3>
+          <p>Auditory signals provide redundancy. Frequency-based notifications allow hearing-impaired users to understand robot state. Sub-audible warnings for precision navigation.</p>
+        </div>
+        <div class="card">
+          <h3>Motion</h3>
+          <p>Kinematic expressions — predictable movement patterns that signal intent. Deceleration, orientation, and temporal pacing all convey meaning. Physics-based and learnable.</p>
+        </div>
+      </div>
+
+      <div class="protocol-stats">
+        <div class="stat">
+          <div class="stat-number">9</div>
+          <div class="stat-label">Protocol States</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">3</div>
+          <div class="stat-label">Signal Modalities</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">1</div>
+          <div class="stat-label">Open Standard</div>
+        </div>
+      </div>
+
+      <div class="cta-row" style="justify-content: center; margin-top: 40px;">
+        <a href="https://lsep.org" target="_blank" class="btn bs">Read the Full Specification → lsep.org</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Certification Section -->
+  <section id="certification">
+    <div class="container">
+      <div class="slabel y">LSEP CERTIFIED™</div>
+      <h2>EU AI Act Ready. Designed for Insurer Benchmarking.</h2>
+      <p class="subtitle">Our certification program ensures your robots meet the highest standards for human-robot interaction, regulatory compliance, and operational transparency. Certified systems are auditable, interoperable, and human-legible.</p>
+
+      <!-- Certification Seal -->
+      <div class="seal-container">
+        <svg class="certification-seal" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+              <feMerge>
+                <feMergeNode in="coloredBlur"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+          </defs>
+
+          <!-- Outer ring -->
+          <circle cx="100" cy="100" r="95" fill="none" stroke="#F5C542" stroke-width="3" filter="url(#glow)" opacity="0.8"/>
+
+          <!-- Middle ring -->
+          <circle cx="100" cy="100" r="85" fill="none" stroke="#F5C542" stroke-width="1" opacity="0.6"/>
+
+          <!-- Inner shield background -->
+          <circle cx="100" cy="100" r="65" fill="#1A1A24" stroke="#F5C542" stroke-width="2"/>
+
+          <!-- Checkmark -->
+          <g transform="translate(100, 100)">
+            <circle cx="0" cy="0" r="30" fill="rgba(245, 197, 66, 0.1)" stroke="#F5C542" stroke-width="1.5"/>
+            <path d="M -10 0 L -2 8 L 12 -8" fill="none" stroke="#F5C542" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+
+          <!-- Top text -->
+          <text x="100" y="30" text-anchor="middle" font-size="11" font-weight="700" fill="#F5C542" letter-spacing="1.5">LSEP CERTIFIED</text>
+
+          <!-- Bottom text -->
+          <text x="100" y="175" text-anchor="middle" font-size="9" font-weight="600" fill="#8888A0" letter-spacing="0.8">HUMAN-ROBOT COMMUNICATION</text>
+        </svg>
+      </div>
+
+      <div class="grid g3">
+        <div class="card">
+          <h3>For Manufacturers</h3>
+          <p>Gain competitive advantage and market access. LSEP certification signals commitment to human-centered design, regulatory readiness, and interoperability. Reduce liability. Accelerate adoption.</p>
+        </div>
+        <div class="card">
+          <h3>For Safety Officers</h3>
+          <p>Standardized, auditable HRI. LSEP-certified robots provide consistent state signaling, reducing human error, confusion, and workplace incidents. Full protocol transparency for internal auditing.</p>
+        </div>
+        <div class="card">
+          <h3>For Insurers</h3>
+          <p>Objective benchmarking and risk assessment. LSEP compliance provides quantifiable metrics for human-robot interaction safety, enabling data-driven underwriting and reduced claim rates.</p>
+        </div>
+      </div>
+
+      <div class="cta-row" style="justify-content: center; margin-top: 40px;">
+        <button class="btn bp" onclick="openModal('certModal')">Apply for Certification Beta →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Training Section -->
+  <section id="training" class="dbg">
+    <div class="container">
+      <div class="slabel t">TRAINING</div>
+      <h2>Master the Standard.</h2>
+      <p class="subtitle">Our certification program guides manufacturers, engineers, and safety teams through LSEP integration. Learn the 9 protocol states, implement the 3 signal modalities, and achieve interoperability across platforms. Hands-on workshops. Real-world case studies. Ongoing support.</p>
+
+      <div class="cta-row" style="justify-content: center; margin-top: 40px;">
+        <button class="btn bs" onclick="openModal('waitlistModal')">Join the Certification Waitlist (2026) →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team Section -->
+  <section id="team">
+    <div class="container">
+      <div class="slabel m">GOVERNANCE</div>
+      <h2>The Team Behind the Standard.</h2>
+      <p class="subtitle">A Swiss engineering and research team building the infrastructure layer for human-robot trust.</p>
+
+      <div class="grid g3">
+        <div class="team-card">
+          <div class="team-photo ng">
+            <img src="nemanja.jpg" alt="Nemanja Galić" onerror="this.style.display='none'">
+            <span style="display: contents;" id="ng-initials">NG</span>
+          </div>
+          <h3>Nemanja Galić</h3>
+          <div class="team-role">Founder & Research Lead</div>
+          <p>Experience Designer and researcher at the intersection of human cognition, physical AI, and trust engineering. Creator of the LSEP protocol. Based in Bern, Switzerland.</p>
+        </div>
+
+        <div class="team-card">
+          <div class="team-photo mb">
+            <img src="mijo.jpg" alt="Mijo Barbaric" onerror="this.style.display='none'">
+            <span style="display: contents;" id="mb-initials">MB</span>
+          </div>
+          <h3>Mijo Barbaric</h3>
+          <div class="team-role">IT Architecture Advisor</div>
+          <p>Ensures LSEP is enterprise-scalable, cloud-ready, and architecturally sound for deployment across diverse robotic platforms.</p>
+        </div>
+
+        <div class="team-card">
+          <div class="team-photo ma">
+            <img src="michael.jpg" alt="Michael Aebli" onerror="this.style.display='none'">
+            <span style="display: contents;" id="ma-initials">MA</span>
+          </div>
+          <h3>Michael Aebli</h3>
+          <div class="team-role">Software Engineering Advisor</div>
+          <p>Brings deep software engineering expertise to LSEP's reference implementation and developer tooling ecosystem.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Alliance Section -->
+  <section id="alliance">
+    <div class="container">
+      <div class="slabel y">THE LSEP ALLIANCE</div>
+      <h2>Join the companies building the future of HRI.</h2>
+      <p class="subtitle">The LSEP Alliance connects manufacturers, integrators, research institutions, and safety bodies. Collaborate on standards, share knowledge, and accelerate human-robot interaction adoption across industries.</p>
+
+      <div class="grid g3">
+        <div class="card">
+          <h3>Network Access</h3>
+          <p>Connect with leading robotics manufacturers, systems integrators, and safety organizations. Build partnerships. Share solutions. Accelerate market adoption.</p>
+        </div>
+        <div class="card">
+          <h3>Technical Resources</h3>
+          <p>Access reference implementations, developer tools, and API documentation. Contribute to the open standard. Shape the future of human-robot interaction.</p>
+        </div>
+        <div class="card">
+          <h3>Industry Recognition</h3>
+          <p>Be listed as an official LSEP Alliance member. Gain credibility with regulators, insurers, and customers. Demonstrate commitment to transparent, safe HRI.</p>
+        </div>
+      </div>
+
+      <div class="cta-row" style="justify-content: center; margin-top: 40px;">
+        <button class="btn bg" onclick="openModal('allianceModal')">Apply for Alliance Membership →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Technical FAQ Section -->
+  <section id="faq">
+    <div class="container">
+      <div class="slabel m">FREQUENTLY ASKED QUESTIONS</div>
+      <h2>Technical FAQ</h2>
+
+      <div class="faq-list">
+        <details>
+          <summary>What is LSEP?</summary>
+          <div class="faq-answer">
+            LSEP (Light, Sound & Expression Protocol) is an open-source communication standard that enables robots and autonomous machines to communicate their internal states and intentions to humans through physics-based signals — light patterns, sound frequencies, and kinematic expressions. It is administered by the Experience Design Institute (EDI).
+          </div>
+        </details>
+
+        <details>
+          <summary>How does LSEP comply with the EU AI Act?</summary>
+          <div class="faq-answer">
+            LSEP provides protocol-level state logging and human-legible intent signaling, addressing key EU AI Act requirements for high-risk AI systems (Annex IV). Every robot state is documented, traceable, and auditable, supporting transparency obligations under Article 13.
+          </div>
+        </details>
+
+        <details>
+          <summary>Is LSEP compatible with ROS 2?</summary>
+          <div class="faq-answer">
+            Yes. LSEP is designed as a middleware-agnostic communication layer. Reference implementations are available for ROS 2 (Robot Operating System), and the protocol can be integrated with any robotics framework that supports structured state messaging.
+          </div>
+        </details>
+
+        <details>
+          <summary>What robot types does LSEP support?</summary>
+          <div class="faq-answer">
+            LSEP supports humanoid robots, collaborative robots (cobots), autonomous mobile robots (AMRs), industrial manipulators, and service robots. The protocol is platform-independent and scales from single-robot deployments to multi-robot fleet operations.
+          </div>
+        </details>
+
+        <details>
+          <summary>How does LSEP ensure interoperability?</summary>
+          <div class="faq-answer">
+            LSEP defines a universal state machine with 9 standardized states and 3 signal modalities. Any LSEP-certified robot uses the same signal vocabulary, ensuring consistent human-robot interaction across manufacturers and platforms — similar to how Wi-Fi ensures wireless interoperability.
+          </div>
+        </details>
+
+        <details>
+          <summary>Where can I find the LSEP specification?</summary>
+          <div class="faq-answer">
+            The full LSEP specification is available on lsep.org and the GitHub repository at github.com/NemanjaGalic/LSEP. The specification is open-source and free to implement.
+          </div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-info">
+          <h3>Experience Design Institute</h3>
+          <p>Building the infrastructure layer for human-robot trust. Based in Bern, Switzerland.</p>
+          <p style="margin-top: 16px; font-size: 12px; color: var(--muted);">The governing body of LSEP — the open standard for Human-Robot Interaction (HRI).</p>
+        </div>
+        <div>
+          <h3 style="font-size: 14px; margin-bottom: 16px;">Resources</h3>
+          <ul class="footer-links">
+            <li><a href="https://lsep.org" target="_blank">LSEP Specification</a></li>
+            <li><a href="https://github.com/NemanjaGalic/LSEP" target="_blank">GitHub</a></li>
+            <li><a href="https://linkedin.com" target="_blank">LinkedIn</a></li>
+            <li><a href="https://twitter.com" target="_blank">Twitter / X</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        © 2026 Experience Design Institute · Bern, Switzerland
+      </div>
+    </div>
+  </footer>
+
+  <!-- Certification Modal -->
+  <div id="certModal" class="modal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal('certModal')">&times;</button>
+      <h2>LSEP Certification Beta</h2>
+      <p>Apply to become an early adopter. Your feedback shapes the standard.</p>
+
+      <form method="POST" action="https://formsubmit.co/nemanja@experiencedesigninstitute.ch">
+        <input type="hidden" name="_subject" value="LSEP Certification Beta Application">
+        <input type="hidden" name="_template" value="table">
+        <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_next" value="https://www.experiencedesigninstitute.ch">
+
+        <div class="form-group">
+          <label for="cert_company">Company Name</label>
+          <input type="text" id="cert_company" name="Company" placeholder="Your company" required>
+        </div>
+
+        <div class="form-group">
+          <label for="cert_name">Full Name</label>
+          <input type="text" id="cert_name" name="Full_Name" placeholder="Your name" required>
+        </div>
+
+        <div class="form-group">
+          <label for="cert_email">Email</label>
+          <input type="email" id="cert_email" name="Email" placeholder="your@email.com" required>
+        </div>
+
+        <div class="form-group">
+          <label for="cert_role">Role</label>
+          <input type="text" id="cert_role" name="Role" placeholder="Engineering Lead, CTO, etc." required>
+        </div>
+
+        <div class="form-group">
+          <label for="cert_robots">Robot Types You Build or Deploy</label>
+          <input type="text" id="cert_robots" name="Robot_Types" placeholder="Humanoid, AMR, Cobot, etc." required>
+        </div>
+
+        <div class="form-group">
+          <label for="cert_message">Why are you interested in LSEP?</label>
+          <textarea id="cert_message" name="Message" placeholder="Tell us about your use case..." required></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn bs" onclick="closeModal('certModal')">Cancel</button>
+          <button type="submit" class="btn bp">Submit Application</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Alliance Modal -->
+  <div id="allianceModal" class="modal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal('allianceModal')">&times;</button>
+      <h2>LSEP Alliance Membership</h2>
+      <p>Join a network of companies building the future of human-robot interaction.</p>
+
+      <form method="POST" action="https://formsubmit.co/nemanja@experiencedesigninstitute.ch">
+        <input type="hidden" name="_subject" value="LSEP Alliance Membership Application">
+        <input type="hidden" name="_template" value="table">
+        <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_next" value="https://www.experiencedesigninstitute.ch">
+
+        <div class="form-group">
+          <label for="alliance_company">Company Name</label>
+          <input type="text" id="alliance_company" name="Company" placeholder="Your company" required>
+        </div>
+
+        <div class="form-group">
+          <label for="alliance_name">Full Name</label>
+          <input type="text" id="alliance_name" name="Full_Name" placeholder="Your name" required>
+        </div>
+
+        <div class="form-group">
+          <label for="alliance_email">Email</label>
+          <input type="email" id="alliance_email" name="Email" placeholder="your@email.com" required>
+        </div>
+
+        <div class="form-group">
+          <label for="alliance_role">Role</label>
+          <input type="text" id="alliance_role" name="Role" placeholder="CTO, VP Engineering, etc." required>
+        </div>
+
+        <div class="form-group">
+          <fieldset>
+            <legend style="margin-bottom: 12px; font-weight: 500; color: var(--text);">Robot Types You Work With</legend>
+            <div class="checkbox-group">
+              <div class="checkbox-item">
+                <input type="checkbox" id="humanoid" name="Robot_Types" value="Humanoid">
+                <label for="humanoid">Humanoid</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="cobot" name="Robot_Types" value="Collaborative (Cobot)">
+                <label for="cobot">Collaborative (Cobot)</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="amr" name="Robot_Types" value="AMR / Mobile">
+                <label for="amr">AMR / Mobile</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="industrial" name="Robot_Types" value="Industrial">
+                <label for="industrial">Industrial</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="service" name="Robot_Types" value="Service Robot">
+                <label for="service">Service Robot</label>
+              </div>
+              <div class="checkbox-item">
+                <input type="checkbox" id="other" name="Robot_Types" value="Other">
+                <label for="other">Other</label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        <div class="form-group">
+          <label for="alliance_message">Tell us about your organization and interest in LSEP</label>
+          <textarea id="alliance_message" name="Message" placeholder="What brings you to LSEP?" required></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn bs" onclick="closeModal('allianceModal')">Cancel</button>
+          <button type="submit" class="btn bg">Submit Application</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Waitlist Modal -->
+  <div id="waitlistModal" class="modal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal('waitlistModal')">&times;</button>
+      <h2>Certification Waitlist</h2>
+      <p>Join the waitlist for our 2026 certification program. We'll notify you when applications open.</p>
+
+      <form method="POST" action="https://formsubmit.co/nemanja@experiencedesigninstitute.ch">
+        <input type="hidden" name="_subject" value="Certification Waitlist Signup">
+        <input type="hidden" name="_template" value="table">
+        <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_next" value="https://www.experiencedesigninstitute.ch">
+
+        <div class="form-group">
+          <label for="waitlist_name">Full Name</label>
+          <input type="text" id="waitlist_name" name="Full_Name" placeholder="Your name" required>
+        </div>
+
+        <div class="form-group">
+          <label for="waitlist_company">Company Name</label>
+          <input type="text" id="waitlist_company" name="Company" placeholder="Your company" required>
+        </div>
+
+        <div class="form-group">
+          <label for="waitlist_email">Email</label>
+          <input type="email" id="waitlist_email" name="Email" placeholder="your@email.com" required>
+        </div>
+
+        <div class="form-group">
+          <label for="waitlist_role">Role</label>
+          <input type="text" id="waitlist_role" name="Role" placeholder="CTO, VP Engineering, etc." required>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn bs" onclick="closeModal('waitlistModal')">Cancel</button>
+          <button type="submit" class="btn bp">Join Waitlist</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Success Modal -->
+  <div id="successModal" class="modal success-modal">
+    <div class="modal-content">
+      <div class="success-checkmark">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+        </svg>
+      </div>
+      <h2>Application Received</h2>
+      <p>Thank you for your interest in LSEP. We'll review your application and get back to you within 48 hours.</p>
+      <a href="https://github.com/NemanjaGalic/LSEP" target="_blank" class="success-link">Check out the LSEP Spec on GitHub →</a>
+      <button type="button" class="btn bp" style="width: 100%; margin-top: 24px;" onclick="closeModal('successModal')">Close</button>
+    </div>
+  </div>
+
+  <script>
+    // Modal Management
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+      }
+    }
+
+    // Close modal when clicking outside
+    window.addEventListener('click', function(event) {
+      const modals = document.querySelectorAll('.modal.active');
+      modals.forEach(modal => {
+        if (event.target === modal) {
+          modal.classList.remove('active');
+          document.body.style.overflow = 'auto';
+        }
+      });
+    });
+
+    // Form Submission Handler
+    document.querySelectorAll('form').forEach(form => {
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // Show success modal
+        closeModal(this.closest('.modal').id);
+        openModal('successModal');
+
+        // Actually submit the form
+        fetch(this.action, {
+          method: 'POST',
+          body: new FormData(this)
+        }).catch(() => {
+          // Form submission handled by formsubmit.co redirect
+        });
+      });
+    });
+
+    // Smooth Scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        const href = this.getAttribute('href');
+        if (href !== '#' && !href.startsWith('#!')) {
+          e.preventDefault();
+          const target = document.querySelector(href);
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }
+      });
+    });
+
+    // Mobile Menu Toggle
+    const hamburger = document.getElementById('hamburger');
+    if (hamburger) {
+      hamburger.addEventListener('click', function() {
+        const navLinks = document.querySelector('.nav-links');
+        navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+      });
+    }
+
+    // Ensure image fallback works
+    function handleImageError(event) {
+      event.target.style.display = 'none';
+    }
+  </script>
+</body>
+</html>
