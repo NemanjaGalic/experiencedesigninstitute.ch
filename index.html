@@ -24,6 +24,9 @@
     gtag('config', 'G-7CEK4MPWR9');
   </script>
 
+    <!-- Tally Presale Form Widget -->
+    <script async src="https://tally.so/widgets/embed.js"></script>
+
   <!-- Schema.org JSON-LD Organization -->
   <script type="application/ld+json">
   {
@@ -1269,52 +1272,14 @@
 
   <!-- Certification Modal -->
   <div id="certModal" class="modal">
-    <div class="modal-content">
+    <div class="modal-content" style="max-width: 640px;">
       <button class="modal-close" onclick="closeModal('certModal')">&times;</button>
-      <h2>LSEP Certification Beta</h2>
-      <p>Apply to become an early adopter. Your feedback shapes the standard.</p>
-
-      <form method="POST" action="https://formsubmit.co/nemanja@experiencedesigninstitute.ch">
-        <input type="hidden" name="_subject" value="LSEP Certification Beta Application">
-        <input type="hidden" name="_template" value="table">
-        <input type="hidden" name="_captcha" value="false">
-        <input type="hidden" name="_next" value="https://www.experiencedesigninstitute.ch">
-
-        <div class="form-group">
-          <label for="cert_company">Company Name</label>
-          <input type="text" id="cert_company" name="Company" placeholder="Your company" required>
-        </div>
-
-        <div class="form-group">
-          <label for="cert_name">Full Name</label>
-          <input type="text" id="cert_name" name="Full_Name" placeholder="Your name" required>
-        </div>
-
-        <div class="form-group">
-          <label for="cert_email">Email</label>
-          <input type="email" id="cert_email" name="Email" placeholder="your@email.com" required>
-        </div>
-
-        <div class="form-group">
-          <label for="cert_role">Role</label>
-          <input type="text" id="cert_role" name="Role" placeholder="Engineering Lead, CTO, etc." required>
-        </div>
-
-        <div class="form-group">
-          <label for="cert_robots">Robot Types You Build or Deploy</label>
-          <input type="text" id="cert_robots" name="Robot_Types" placeholder="Humanoid, AMR, Cobot, etc." required>
-        </div>
-
-        <div class="form-group">
-          <label for="cert_message">Why are you interested in LSEP?</label>
-          <textarea id="cert_message" name="Message" placeholder="Tell us about your use case..." required></textarea>
-        </div>
-
-        <div class="modal-footer">
-          <button type="button" class="btn bs" onclick="closeModal('certModal')">Cancel</button>
-          <button type="submit" class="btn bp">Submit Application</button>
-        </div>
-      </form>
+      <h2>LSEP Systems Architect Beta</h2>
+      <p>Secure your spot in the first certification for human-robot systems architecture.</p>
+      <p style="margin-bottom: 1.5rem; color: var(--teal); font-weight: 600;">Beta Price: CHF 290 <span style="text-decoration: line-through; opacity: 0.6; color: #888;">CHF 490</span></p>
+      <iframe data-tally-src="https://tally.so/embed/pbG2JE?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1" loading="lazy" width="100%" height="400" frameborder="0" marginheight="0" marginwidth="0" title="LSEP Presale Registration" style="border: none;"></iframe>
+      <p style="margin-top: 1rem; font-size: 0.85rem; opacity: 0.7; text-align: center;">Limited to 20 Beta seats. Payment via Stripe after review.</p>
+      <button type="button" class="btn bs" onclick="closeModal('certModal')" style="margin-top: 0.5rem;">Cancel</button>
     </div>
   </div>
 
